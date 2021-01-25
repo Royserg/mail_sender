@@ -2,6 +2,8 @@ import { ChangeEvent, FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 // Styles
 import useStyles from './settingsStyles';
+// Services
+import { verifyConnection } from 'services/mailService';
 // Components
 import ViewContainer from 'components/ViewContainer/ViewContainer';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -41,14 +43,14 @@ const Settings: FC = () => {
     // 2. verify connection
     // 3. Save transporter if it successfully connected (Context API)
 
-    // try {
-    //   const connectionResult = await verifyConnection();
-    //   if (connectionResult) {
-    //     setConnectionMessage('Successfully connected');
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    try {
+      const connectionResult = await verifyConnection('username', 'password');
+      if (connectionResult) {
+        setConnectionMessage('Successfully connected');
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

@@ -26,3 +26,6 @@ yarn-error.log*
 
 # Built directory
 /dist
+
+# config
+src/config/index.ts

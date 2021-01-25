@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 // Services
-// import sendEmail from '../../services/mailService';
+import { sendMail } from 'services/mailService';
 // Styles
 import useStyles from './messagesStyles';
 // Components
@@ -14,14 +14,14 @@ const Messages: FC = () => {
 
   const handleFormSubmit = async (data: any) => {
     console.log(data);
-    // const result = await sendEmail({
-    //   recipient: data.recipient,
-    //   cc: data.cc,
-    //   subject: data.subject,
-    //   html: data.content,
-    // });
+    const result = await sendMail({
+      recipient: data.recipient,
+      cc: data.cc,
+      subject: data.subject,
+      html: data.content,
+    });
 
-    // console.log('result', result);
+    console.log('result', result);
   };
 
   return (
