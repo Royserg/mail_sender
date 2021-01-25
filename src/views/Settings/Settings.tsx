@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import clsx from 'clsx';
 // Styles
 import useStyles from './settingsStyles';
-// Services
-import { verifyConnection } from 'services/mailService';
+// Redux
+import { useStoreActions, useStoreState } from 'store';
 // Components
 import ViewContainer from 'components/ViewContainer/ViewContainer';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -18,16 +18,17 @@ import {
   Typography,
 } from '@material-ui/core';
 
+import config from 'config';
+
 const Settings: FC = () => {
   const classes = useStyles();
+
+  const { connect } = useStoreActions(({ account }) => account);
+  const { connectionFeedback } = useStoreState(({ account }) => account);
 
   const { register, handleSubmit, errors, formState } = useForm();
 
   const [expanded, setExpanded] = useState('panel1');
-  const [connectionFeedback, setConnectionFeedback] = useState({
-    msg: '',
-    success: false,
-  });
 
   const handleChange = (panel: string) => (
     e: ChangeEvent<{}>,
@@ -37,27 +38,13 @@ const Settings: FC = () => {
   };
 
   const handleConnectToOutlook = async (data: {
-    email: string;
+    username: string;
     password: string;
   }) => {
-    console.log('connecting!', data);
     // Disable submit button and show `connecting` indicator
+    console.log('sending', data);
 
-    // 1. Create transporter object from nodemailer (Context API)
-    // 2. verify connection
-    // 3. Save transporter if it successfully connected (Context API)
-
-    try {
-      const connectionResult = await verifyConnection('username', 'password');
-      if (connectionResult) {
-        setConnectionFeedback({ msg: 'Successfully connected', success: true });
-      }
-    } catch (err) {
-      setConnectionFeedback({
-        msg: 'Authentication unsuccessful',
-        success: false,
-      });
-    }
+    connect({ username: data.username, password: data.password });
   };
 
   return (
@@ -101,7 +88,7 @@ const Settings: FC = () => {
                       inputRef={register({ required: 'Username required.' })}
                       error={!!errors.username}
                       helperText={errors.username && errors.username.message}
-                      defaultValue='username'
+                      defaultValue={config.USERNAME}
                     />
                     <TextField
                       name='password'
@@ -110,7 +97,7 @@ const Settings: FC = () => {
                       inputRef={register({ required: 'Password required.' })}
                       error={!!errors.password}
                       helperText={errors.password && errors.password.message}
-                      defaultValue='password'
+                      defaultValue={config.PASSWORD}
                     />
                     <Button
                       variant='outlined'
@@ -121,7 +108,7 @@ const Settings: FC = () => {
                       Connect
                     </Button>
                     {/* Connection feedback */}
-                    {connectionFeedback.msg && (
+                    {connectionFeedback.message && (
                       <div
                         className={clsx(
                           connectionFeedback.success
@@ -129,7 +116,7 @@ const Settings: FC = () => {
                             : classes.feedbackFail
                         )}
                       >
-                        {connectionFeedback.msg}
+                        {connectionFeedback.message}
                       </div>
                     )}
                   </Grid>

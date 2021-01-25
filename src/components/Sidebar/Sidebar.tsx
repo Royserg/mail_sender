@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { List, ListItem } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
 // Styles
@@ -14,7 +14,7 @@ const Sidebar: FC = () => {
           <ListItem button>+ Message</ListItem>
         </NavLink>
         <NavLink to='/templates' className={classes.sidebarLink}>
-          <ListItem button>Create template</ListItem>
+          <ListItem button>Email templates</ListItem>
         </NavLink>
         <NavLink to='/lists' className={classes.sidebarLink}>
           <ListItem button>Mailing List</ListItem>

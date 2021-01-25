@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import { Route, Switch } from 'react-router-dom';
 // Styles
@@ -8,6 +8,7 @@ import Sidebar from 'components/Sidebar';
 import Messages from 'views/Messages';
 import Settings from 'views/Settings';
 import MailingLists from 'views/MailingLists';
+import Templates from 'views/Templates';
 
 const theme = createMuiTheme({
   overrides: {
@@ -34,6 +35,7 @@ const App: FC = () => {
       <main className={classes.main}>
         <Switch>
           <Route exact path='/messages' component={Messages} />
+          <Route exact path='/templates' component={Templates} />
           <Route exact path='/lists' component={MailingLists} />
           <Route exact path='/settings' component={Settings} />
         </Switch>

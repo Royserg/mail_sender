@@ -10,7 +10,7 @@ interface MailData {
 
 const sendMail = ({ recipient, cc, subject, html }: MailData) => {
   const transporter = nodemailer.createTransport({
-    // TODO: Should be read from redux/database
+    // TODO: Should be read from redux/database - If transporter will be saved then this will not be needed
     service: 'outlook',
     auth: {
       user: config.USERNAME, //TODO: Change for production
@@ -44,12 +44,12 @@ const verifyConnection = (username: string, password: string) => {
     pool: true,
     service: 'outlook',
     auth: {
-      user: config.USERNAME,
-      pass: config.PASSWORD,
+      user: username,
+      pass: password,
     },
     maxConnections: 3,
   });
-
+  // TODO: Maybe return transporter and call verify in Thunk
   return transporter.verify();
 };
 

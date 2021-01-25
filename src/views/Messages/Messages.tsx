@@ -1,16 +1,20 @@
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
+// Redux
+import { useStoreState } from 'store';
 // Services
 import { sendMail } from 'services/mailService';
 // Styles
 import useStyles from './messagesStyles';
 // Components
-import { Button, Container, TextField } from '@material-ui/core';
+import ViewContainer from 'components/ViewContainer';
+import { Button, TextField } from '@material-ui/core';
 
 const Messages: FC = () => {
   const classes = useStyles();
-
   const { register, handleSubmit, errors } = useForm();
+
+  const { username } = useStoreState((state) => state.account.account);
 
   const handleFormSubmit = async (data: any) => {
     console.log(data);
@@ -25,7 +29,9 @@ const Messages: FC = () => {
   };
 
   return (
-    <Container maxWidth='lg'>
+    <ViewContainer
+      heading={username || 'Connect to your Outlook account in Settings'}
+    >
       <h3>Create Message</h3>
       <div>
         <form
@@ -83,7 +89,7 @@ const Messages: FC = () => {
           </Button>
         </form>
       </div>
-    </Container>
+    </ViewContainer>
   );
 };
 
