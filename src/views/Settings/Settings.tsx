@@ -24,9 +24,11 @@ const Settings: FC = () => {
   const classes = useStyles();
 
   const { connect } = useStoreActions(({ account }) => account);
-  const { connectionFeedback } = useStoreState(({ account }) => account);
+  const { connectionFeedback, connectionStatus } = useStoreState(
+    ({ account }) => account
+  );
 
-  const { register, handleSubmit, errors, formState } = useForm();
+  const { register, handleSubmit, errors } = useForm();
 
   const [expanded, setExpanded] = useState('panel1');
 
@@ -103,9 +105,11 @@ const Settings: FC = () => {
                       variant='outlined'
                       className={classes.saveButton}
                       type='submit'
-                      disabled={formState.isSubmitting}
+                      disabled={connectionStatus === 'Loading'}
                     >
-                      Connect
+                      {connectionStatus === 'Loading'
+                        ? 'Loading...'
+                        : 'Connect'}
                     </Button>
                     {/* Connection feedback */}
                     {connectionFeedback.message && (

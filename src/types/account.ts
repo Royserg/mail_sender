@@ -7,3 +7,5 @@ export interface AccountConnectionFeedback {
   message: string;
   success: boolean;
 }
+
+export type ConnectionStatus = 'Not connected' | 'Loading' | 'Connected';
