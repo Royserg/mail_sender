@@ -1,5 +1,6 @@
 import { ChangeEvent, FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import clsx from 'clsx';
 // Styles
 import useStyles from './settingsStyles';
 // Services
@@ -23,7 +24,10 @@ const Settings: FC = () => {
   const { register, handleSubmit, errors, formState } = useForm();
 
   const [expanded, setExpanded] = useState('panel1');
-  const [connectionMessage, setConnectionMessage] = useState('');
+  const [connectionFeedback, setConnectionFeedback] = useState({
+    msg: '',
+    success: false,
+  });
 
   const handleChange = (panel: string) => (
     e: ChangeEvent<{}>,
@@ -46,10 +50,13 @@ const Settings: FC = () => {
     try {
       const connectionResult = await verifyConnection('username', 'password');
       if (connectionResult) {
-        setConnectionMessage('Successfully connected');
+        setConnectionFeedback({ msg: 'Successfully connected', success: true });
       }
     } catch (err) {
-      console.log(err);
+      setConnectionFeedback({
+        msg: 'Authentication unsuccessful',
+        success: false,
+      });
     }
   };
 
@@ -114,7 +121,17 @@ const Settings: FC = () => {
                       Connect
                     </Button>
                     {/* Connection feedback */}
-                    {connectionMessage && <div>{connectionMessage}</div>}
+                    {connectionFeedback.msg && (
+                      <div
+                        className={clsx(
+                          connectionFeedback.success
+                            ? classes.feedbackSuccess
+                            : classes.feedbackFail
+                        )}
+                      >
+                        {connectionFeedback.msg}
+                      </div>
+                    )}
                   </Grid>
                 </form>
               </Grid>
