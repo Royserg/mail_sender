@@ -19,6 +19,7 @@
     "@types/node": "^12.0.0",
     "@types/react-dom": "^16.9.8",
     "clsx": "^1.1.1",
+    "easy-peasy": "^4.0.1",
     "electron-is-dev": "^1.2.0",
     "nodemailer": "^6.4.17",
     "react": "^17.0.1",

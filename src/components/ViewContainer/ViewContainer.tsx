@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from 'react';
+import { FC } from 'react';
 import { Container, Typography } from '@material-ui/core';
 
 // Styles
@@ -6,7 +6,7 @@ import useStyles from './viewContainerStyles';
 
 interface ViewContainerProps {
   heading: string;
-  children: ReactElement;
+  children?: any;
 }
 
 const ViewContainer: FC<ViewContainerProps> = ({ heading, children }) => {
