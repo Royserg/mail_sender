@@ -11,15 +11,11 @@ import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 import Account from 'database/entities/account';
 
-import 'config/init';
-// @ts-ignore
-console.log('random', window?.random);
+// Fix for sql.js database
+// Cannot read property 'Database' of undefined: https://github.com/typeorm/typeorm/issues/4291#issuecomment-719585054
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-// window.SQL = window.require('sql.js/dist/sql-wasm');
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// window.SQL2 = require('sql.js/dist/sql-wasm');
+window.SQL = window.require('sql.js/js/sql.js');
 
 createConnection({
   type: 'sqljs',
