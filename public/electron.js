@@ -12,6 +12,7 @@ function createWindow() {
     },
   });
 
+  win.random = 'my_var';
   // and load the index.html of the app.
   win.loadURL(
     isDev
