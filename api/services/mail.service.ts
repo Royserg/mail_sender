@@ -1,5 +1,6 @@
-import config from 'config';
-const nodemailer = window.require('nodemailer');
+import { createTransport } from 'nodemailer';
+
+// TODO: implement this
 
 interface MailData {
   recipient: string;
@@ -9,18 +10,17 @@ interface MailData {
 }
 
 const sendMail = ({ recipient, cc, subject, html }: MailData) => {
-  const transporter = nodemailer.createTransport({
+  const transporter = createTransport({
     // TODO: Should be read from redux/database - If transporter will be saved then this will not be needed
     service: 'outlook',
     auth: {
-      user: config.USERNAME, //TODO: Change for production
-      pass: config.PASSWORD,
+      user: 'random', //TODO: Change for production
+      pass: 'random',
     },
-    maxConnections: 3,
   });
 
   const mailOptions = {
-    from: config.USERNAME,
+    from: 'random_usernmae',
     to: recipient,
     cc,
     subject,
@@ -40,7 +40,8 @@ const sendMail = ({ recipient, cc, subject, html }: MailData) => {
 };
 
 const verifyConnection = (username: string, password: string) => {
-  const transporter = nodemailer.createTransport({
+  console.log('Called verify from API service');
+  const transporter = createTransport({
     pool: true,
     service: 'outlook',
     auth: {

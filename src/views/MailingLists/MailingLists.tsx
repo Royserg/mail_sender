@@ -1,5 +1,6 @@
-import ViewContainer from 'components/ViewContainer';
 import { FC } from 'react';
+// Components
+import ViewContainer from 'components/ViewContainer';
 
 import useStyles from './mailingListsStyles';
 

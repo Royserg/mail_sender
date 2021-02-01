@@ -1,8 +1,10 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import { Route, Switch } from 'react-router-dom';
 // Styles
 import useStyles from './AppStyles';
+// Redux
+import { useStoreActions } from 'store';
 // Components
 import Sidebar from 'components/Sidebar';
 import Messages from 'views/Messages';
@@ -27,6 +29,12 @@ const theme = createMuiTheme({
 
 const App: FC = () => {
   const classes = useStyles();
+
+  const { init } = useStoreActions(({ account }) => account);
+
+  useEffect(() => {
+    init();
+  }, [init]);
 
   return (
     <ThemeProvider theme={theme}>

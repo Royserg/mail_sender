@@ -1,30 +1,59 @@
 const { app, BrowserWindow } = require('electron');
+
 const path = require('path');
 const isDev = require('electron-is-dev');
 
-function createWindow() {
-  // Create the browser window.
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+let mainWindow;
+
+// Initializing the Electron Window
+const createWindow = () => {
+  mainWindow = new BrowserWindow({
+    width: 900, // width of window
+    height: 650, // height of window
     webPreferences: {
-      nodeIntegration: true,
+      // The preload file where we will perform our app communication
+      preload: isDev
+        ? path.join(app.getAppPath(), './public/api/preload.js') // Loading it from the public folder for dev
+        : path.join(app.getAppPath(), './build/api/preload.js'), // Loading it from the build folder for production
+      worldSafeExecuteJavaScript: true, // If you're using Electron 12+, this should be enabled by default and does not need to be added here.
+      contextIsolation: true, // Isolating context so our app is not exposed to random javascript executions making it safer.
+      // nodeIntegration: true,
     },
   });
 
-  win.random = 'my_var';
-  // and load the index.html of the app.
-  win.loadURL(
+  // Loading a webpage inside the electron window we just created
+  mainWindow.loadURL(
     isDev
-      ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../build/index.html')}`
+      ? 'http://localhost:3000' // Loading localhost if dev mode
+      : `file://${path.join(__dirname, '../build/index.html')}` // Loading build file if in production
   );
-}
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(createWindow);
+  // Setting Window Icon - Asset file needs to be in the public/images folder.
+  mainWindow.setIcon(path.join(__dirname, 'icons/mail_sender.png'));
+
+  // In development mode, if the window has loaded, then load the dev tools.
+  if (isDev) {
+    mainWindow.webContents.on('did-frame-finish-load', () => {
+      mainWindow.webContents.openDevTools({ mode: 'detach' });
+    });
+  }
+};
+
+// === Controllers ===
+require('./api/controllers');
+
+// ((OPTIONAL)) Setting the location for the userdata folder created by an Electron app. It default to the AppData folder if you don't set it.
+app.setPath(
+  'userData',
+  isDev
+    ? path.join(app.getAppPath(), 'userdata/') // In development it creates the userdata folder where package.json is
+    : path.join(process.resourcesPath, 'userdata/') // In production it creates userdata folder in the resources folder
+);
+
+// When the app is ready to load
+app.whenReady().then(async () => {
+  await createWindow(); // Create the mainWindow
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -43,5 +72,10 @@ app.on('activate', () => {
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+// Logging any exceptions
+process.on('uncaughtException', (error) => {
+  console.log(`Exception: ${error}`);
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});

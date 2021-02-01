@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 // Redux
 import { useStoreState } from 'store';
 // Services
-import { sendMail } from 'services/mailService';
+// import { sendMail } from 'services/mailService';
 // Styles
 import useStyles from './messagesStyles';
 // Components
@@ -17,15 +17,15 @@ const Messages: FC = () => {
   const { username } = useStoreState((state) => state.account.account);
 
   const handleFormSubmit = async (data: any) => {
-    console.log(data);
-    const result = await sendMail({
-      recipient: data.recipient,
-      cc: data.cc,
-      subject: data.subject,
-      html: data.content,
-    });
+    console.log('sending mails', data);
+    // const result = await sendMail({
+    //   recipient: data.recipient,
+    //   cc: data.cc,
+    //   subject: data.subject,
+    //   html: data.content,
+    // });
 
-    console.log('result', result);
+    // console.log('result', result);
   };
 
   return (

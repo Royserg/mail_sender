@@ -4,8 +4,10 @@ import {
   AccountConnectionFeedback,
   ConnectionStatus,
 } from 'types/account';
-// Services
-import { verifyConnection } from 'services/mailService';
+
+// API
+const { saveUser, getUser } = window.api.users;
+const { verifyConnection } = window.api.mailer;
 
 export interface AccountModel {
   account: Account;
@@ -20,6 +22,7 @@ export interface AccountModel {
   //-> connection feedback
   setConnectionFeedback: Action<AccountModel, AccountConnectionFeedback>;
   // Thunks
+  init: Thunk<AccountModel>;
   connect: Thunk<AccountModel, Account>;
 }
 
@@ -46,6 +49,13 @@ const accountModel: AccountModel = {
     state.connectionFeedback = payload;
   }),
   // Thunks
+  init: thunk(async (actions) => {
+    // When application loads, check if user exists in db and load it to Redux
+    const user = await getUser();
+    if (user) {
+      actions.saveAccount(user);
+    }
+  }),
   connect: thunk(async (actions, { username, password }) => {
     actions.setConnectionStatus('Loading');
     // 1. Create transporter object from nodemailer (Redux)
@@ -53,9 +63,12 @@ const accountModel: AccountModel = {
 
     try {
       console.log('thunk', username, password);
-      const isConnectionValid = await verifyConnection(username, password);
-
+      const isConnectionValid = await verifyConnection({ username, password });
+      console.log('is connection valid', isConnectionValid);
       if (isConnectionValid) {
+        // Save account to db
+        saveUser({ username, password });
+
         actions.saveAccount({ username, password });
         actions.setConnectionFeedback({
           message: 'Successfully connected',
