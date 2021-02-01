@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "rootDir": "api",
+    "outDir": "./public/api",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  },
+  "include": ["api"]
+}

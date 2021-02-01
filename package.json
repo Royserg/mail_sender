@@ -6,7 +6,30 @@
   "author": "Royserg",
   "main": "public/electron.js",
   "build": {
-    "appId": "display.menu"
+    "appId": "com.royserg.mailsender",
+    "productName": "MailSender",
+    "copyright": "Copyrights",
+    "files": [
+      "build/**/*"
+    ],
+    "directories": {
+      "buildResources": "build"
+    },
+    "extraResources": [
+      {
+        "from": "./db/",
+        "to": "db/",
+        "filter": [
+          "**/* "
+        ]
+      }
+    ],
+    "win": {
+      "icon": "./build/icons/mail_sender.png",
+      "target": [
+        "7z"
+      ]
+    }
   },
   "homepage": "./",
   "dependencies": {
@@ -21,12 +44,16 @@
     "clsx": "^1.1.1",
     "easy-peasy": "^4.0.1",
     "electron-is-dev": "^1.2.0",
+    "node-pre-gyp": "^0.17.0",
     "nodemailer": "^6.4.17",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hook-form": "^6.14.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^5.0.1",
+    "typeorm": "^0.2.30",
     "typescript": "^4.0.3",
     "web-vitals": "^0.2.4"
   },
@@ -36,8 +63,10 @@
     "react-test": "react-scripts test",
     "react-eject": "react-scripts eject",
     "electron-build": "electron-builder",
+    "tsc:api": "tsc -p tsconfig.api.json",
+    "postinstall": "electron-builder install-app-deps",
     "build": "npm run react-build && npm run electron-build",
-    "start": "concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron ./\" ",
+    "start": "npm run tsc:api && concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron ./\" ",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -60,12 +89,14 @@
     ]
   },
   "devDependencies": {
+    "@types/nodemailer": "^6.4.0",
     "@types/react": "^16.14.2",
     "@types/react-router-dom": "^5.1.7",
     "concurrently": "^5.3.0",
     "cross-env": "^7.0.3",
     "electron": "^11.2.0",
     "electron-builder": "^22.9.1",
+    "electron-rebuild": "^2.3.4",
     "wait-on": "^5.2.1"
   }
 }

@@ -18,7 +18,7 @@ import {
   Typography,
 } from '@material-ui/core';
 
-import config from 'config';
+import config from 'config'; // TODO: only dev purpose
 
 const Settings: FC = () => {
   const classes = useStyles();
