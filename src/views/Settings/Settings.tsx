@@ -6,19 +6,21 @@ import useStyles from './settingsStyles';
 // Redux
 import { useStoreActions, useStoreState } from 'store';
 // Components
-import ViewContainer from 'components/ViewContainer/ViewContainer';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Button,
-  Grid,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+// import ViewContainer from 'components/ViewContainer/ViewContainer';
+// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+// import {
+//   Accordion,
+//   AccordionDetails,
+//   AccordionSummary,
+//   Button,
+//   Grid,
+//   TextField,
+//   Typography,
+// } from '@material-ui/core';
 
 import config from 'config'; // TODO: only dev purpose
+import { Switch } from 'antd';
+import { useThemeSwitcher } from 'react-css-theme-switcher';
 
 const Settings: FC = () => {
   const classes = useStyles();
@@ -31,6 +33,16 @@ const Settings: FC = () => {
   const { register, handleSubmit, errors } = useForm();
 
   const [expanded, setExpanded] = useState('panel1');
+
+  // Theme Switching
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { switcher, currentTheme, status, themes } = useThemeSwitcher();
+
+  const handleThemeSwitch = (checked: boolean) => {
+    setIsDarkMode(checked);
+    switcher({ theme: checked ? themes.dark : themes.light });
+  };
+  // Theme Switching --- End
 
   const handleChange = (panel: string) => (
     e: ChangeEvent<{}>,
@@ -50,7 +62,17 @@ const Settings: FC = () => {
   };
 
   return (
-    <ViewContainer heading='Settings'>
+    <div>
+      <h3>Settings</h3>
+      <Switch onChange={handleThemeSwitch} checked={isDarkMode} />
+    </div>
+  );
+};
+
+export default Settings;
+
+// {
+/* <ViewContainer heading='Settings'>
       <Grid container justify='center' alignItems='center'>
         <div className={classes.settingsContainer}>
           <Accordion
@@ -111,45 +133,42 @@ const Settings: FC = () => {
                         ? 'Loading...'
                         : 'Connect'}
                     </Button>
-                    {/* Connection feedback */}
-                    {connectionFeedback.message && (
-                      <div
-                        className={clsx(
-                          connectionFeedback.success
-                            ? classes.feedbackSuccess
-                            : classes.feedbackFail
-                        )}
-                      >
-                        {connectionFeedback.message}
-                      </div>
-                    )}
-                  </Grid>
-                </form>
-              </Grid>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion
-            expanded={expanded === 'panel2'}
-            onChange={handleChange('panel2')}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls='theme-settings'
-              id='theme-settings'
-            >
-              <Typography className={classes.heading}>Theme</Typography>
-              <Typography className={classes.secondaryHeading}>
-                Change theme
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography>To Implement this functionality if time</Typography>
-            </AccordionDetails>
-          </Accordion>
-        </div>
-      </Grid>
-    </ViewContainer>
-  );
-};
-
-export default Settings;
+                    {/* Connection feedback */
+// }
+//               {connectionFeedback.message && (
+//                 <div
+//                   className={clsx(
+//                     connectionFeedback.success
+//                       ? classes.feedbackSuccess
+//                       : classes.feedbackFail
+//                   )}
+//                 >
+//                   {connectionFeedback.message}
+//                 </div>
+//               )}
+//             </Grid>
+//           </form>
+//         </Grid>
+//       </AccordionDetails>
+//     </Accordion>
+//     <Accordion
+//       expanded={expanded === 'panel2'}
+//       onChange={handleChange('panel2')}
+//     >
+//       <AccordionSummary
+//         expandIcon={<ExpandMoreIcon />}
+//         aria-controls='theme-settings'
+//         id='theme-settings'
+//       >
+//         <Typography className={classes.heading}>Theme</Typography>
+//         <Typography className={classes.secondaryHeading}>
+//           Change theme
+//         </Typography>
+//       </AccordionSummary>
+//       <AccordionDetails>
+//         <Typography>To Implement this functionality if time</Typography>
+//       </AccordionDetails>
+//     </Accordion>
+//   </div>
+// </Grid>
+// </ViewContainer> */}
