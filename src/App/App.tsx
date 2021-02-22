@@ -73,11 +73,10 @@ const App: FC = ({ children }) => {
       children: children && loopMenuItem(children),
     }));
 
-  console.log('location', location);
-
   return (
     <ProLayout
       title='MailSender'
+      fixSiderbar={true}
       location={{
         pathname: location.pathname,
       }}

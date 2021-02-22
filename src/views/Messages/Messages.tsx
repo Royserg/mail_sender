@@ -5,17 +5,24 @@ import { useStoreState } from 'store';
 // Services
 // import { sendMail } from 'services/mailService';
 // Styles
-import useStyles from './messagesStyles';
+
 // Components
-import ViewContainer from 'components/ViewContainer';
-import { Button, TextField } from '@material-ui/core';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
+import ProForm, {
+  ProFormText,
+  ProFormSelect,
+  ProFormUploadButton,
+  ProFormTextArea,
+} from '@ant-design/pro-form';
+
+import { Card } from 'antd';
 
 const Messages: FC = () => {
-  const classes = useStyles();
   const { register, handleSubmit, errors } = useForm();
 
   const { username } = useStoreState((state) => state.account.account);
+
+  console.log('username', username);
 
   const handleFormSubmit = async (data: any) => {
     console.log('sending mails', data);
@@ -30,69 +37,124 @@ const Messages: FC = () => {
   };
 
   return (
-    // <ViewContainer
-    //   heading={username || 'Connect to your Outlook account in Settings'}
-    // >
-    <PageContainer>
-      <h3>Create Message</h3>
-      <div>
-        <form
-          noValidate
-          autoComplete='off'
-          onSubmit={handleSubmit(handleFormSubmit)}
+    <PageContainer title='Message'>
+      {/* Alert maybe in here saying if there is connection to Outlook account */}
+      <Card>
+        <ProForm
+          submitter={{
+            searchConfig: {
+              submitText: 'Send',
+            },
+            resetButtonProps: {
+              style: {
+                display: 'none',
+              },
+            },
+            render: (_, dom) => <FooterToolbar>{dom}</FooterToolbar>,
+          }}
+          onFinish={async (values) => handleFormSubmit(values)}
         >
-          <div>
-            <TextField
-              name='recipient'
-              label='To'
-              inputRef={register({ required: 'Recipient required.' })}
-              error={!!errors.recipient}
-              helperText={errors.recipient && errors.recipient.message}
-              classes={{ root: classes.fieldContainer }}
-            />
-          </div>
+          {/* Sender */}
+          <ProFormText
+            name='Email'
+            label='Email'
+            width='lg'
+            fieldProps={{ placeholder: 'Connect to your Outlook email' }}
+            initialValue={username || ''}
+            disabled
+            rules={[
+              {
+                required: true,
+                message: 'Outlook account connection required',
+              },
+            ]}
+          />
 
-          <div>
-            <TextField
-              name='cc'
-              label='CC'
-              inputRef={register}
-              classes={{ root: classes.fieldContainer }}
-            />
-          </div>
+          {/* Recipients */}
+          <ProForm.Group>
+            {/* <ProFormText
+              name='Recipients'
+              label='Recipients'
+              fieldProps={{
+                placeholder: 'Enter recipients or upload mailing list',
+              }}
+              width='lg'
+              rules={[
+                {
+                  required: true,
+                  message: 'Recipient(s) required',
+                },
+              ]}
+            /> */}
 
-          <div>
-            <TextField
-              name='subject'
-              label='Subject'
-              inputRef={register({ required: 'Subject required.' })}
-              error={!!errors.subject}
-              helperText={errors.subject && errors.subject.message}
-              classes={{ root: classes.fieldContainer }}
+            <ProFormSelect
+              name='mailingList'
+              label='Mailing list'
+              fieldProps={{
+                placeholder: 'Mailing list',
+              }}
+              width='md'
+              options={[
+                // Fetch mailing lists, or rather read them from redux
+                {
+                  value: 'list1',
+                  label: 'list1_label',
+                },
+              ]}
+              rules={[
+                {
+                  required: true,
+                  message: 'Mailing list required',
+                },
+              ]}
             />
-          </div>
+          </ProForm.Group>
 
-          <div style={{ margin: '2rem 0' }}>
-            <TextField
-              name='content'
-              label='Content'
-              inputRef={register({ required: 'Content required.' })}
-              error={!!errors.content}
-              helperText={errors.content && errors.content.message}
-              variant='outlined'
-              multiline
-              rows={10}
-              classes={{ root: classes.fieldContainer }}
-            />
-          </div>
+          <ProFormText
+            name='cc'
+            label='CC'
+            fieldProps={{
+              placeholder: 'Enter cc',
+            }}
+            width='lg'
+            rules={[
+              {
+                required: false,
+              },
+            ]}
+          />
 
-          <Button variant='contained' type='submit'>
-            Send
-          </Button>
-        </form>
-      </div>
+          <ProFormText
+            name='subject'
+            label='Email subject'
+            width='lg'
+            fieldProps={{ placeholder: 'Enter email subject' }}
+            rules={[
+              {
+                required: true,
+                message: 'Subject required',
+              },
+            ]}
+          />
+
+          <ProFormUploadButton
+            extra='Upload：.jpg .zip .doc .wps'
+            label='Upload'
+            name='file'
+            title='Upload'
+          />
+
+          <ProFormTextArea
+            width='xl'
+            label='Message'
+            name='message'
+            fieldProps={{
+              placeholder: 'Message',
+            }}
+          />
+        </ProForm>
+      </Card>
     </PageContainer>
-    // </ViewContainer>
   );
 };
 
