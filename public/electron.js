@@ -8,8 +8,8 @@ let mainWindow;
 // Initializing the Electron Window
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 900, // width of window
-    height: 650, // height of window
+    width: 1080, // width of window
+    height: 768, // height of window
     webPreferences: {
       // The preload file where we will perform our app communication
       preload: isDev

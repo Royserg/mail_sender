@@ -9,6 +9,7 @@ import useStyles from './messagesStyles';
 // Components
 import ViewContainer from 'components/ViewContainer';
 import { Button, TextField } from '@material-ui/core';
+import { PageContainer } from '@ant-design/pro-layout';
 
 const Messages: FC = () => {
   const classes = useStyles();
@@ -29,9 +30,10 @@ const Messages: FC = () => {
   };
 
   return (
-    <ViewContainer
-      heading={username || 'Connect to your Outlook account in Settings'}
-    >
+    // <ViewContainer
+    //   heading={username || 'Connect to your Outlook account in Settings'}
+    // >
+    <PageContainer>
       <h3>Create Message</h3>
       <div>
         <form
@@ -89,7 +91,8 @@ const Messages: FC = () => {
           </Button>
         </form>
       </div>
-    </ViewContainer>
+    </PageContainer>
+    // </ViewContainer>
   );
 };
 

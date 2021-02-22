@@ -33,6 +33,8 @@
   },
   "homepage": "./",
   "dependencies": {
+    "@ant-design/icons": "^4.5.0",
+    "@ant-design/pro-layout": "^6.14.2",
     "@craco/craco": "^6.1.1",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",

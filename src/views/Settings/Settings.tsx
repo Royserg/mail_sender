@@ -21,6 +21,7 @@ import { useStoreActions, useStoreState } from 'store';
 import config from 'config'; // TODO: only dev purpose
 import { Switch } from 'antd';
 import { useThemeSwitcher } from 'react-css-theme-switcher';
+import { PageContainer } from '@ant-design/pro-layout';
 
 const Settings: FC = () => {
   const classes = useStyles();
@@ -62,10 +63,10 @@ const Settings: FC = () => {
   };
 
   return (
-    <div>
+    <PageContainer>
       <h3>Settings</h3>
       <Switch onChange={handleThemeSwitch} checked={isDarkMode} />
-    </div>
+    </PageContainer>
   );
 };
 
