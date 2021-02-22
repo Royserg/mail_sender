@@ -47,6 +47,7 @@ const App: FC = ({ children }) => {
   };
 
   useEffect(() => {
+    console.log('initializing the data');
     init();
   }, [init]);
 

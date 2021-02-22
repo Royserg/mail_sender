@@ -34,6 +34,7 @@ const themes = {
 
 ReactDOM.render(
   <StoreProvider store={store}>
+    {/* TODO: Read theme from from DB (redux) */}
     <ThemeSwitcherProvider themeMap={themes} defaultTheme={Theme.Light}>
       <Router>
         <App />

@@ -29,7 +29,7 @@ export interface AccountModel {
 const accountModel: AccountModel = {
   account: { username: '', password: '' },
   connectionStatus: 'Not connected',
-  connectionFeedback: { message: '', success: false },
+  connectionFeedback: { message: 'Not connected!', success: false },
   // transporter?: '??' TODO: think about it
 
   // Actions
@@ -54,6 +54,8 @@ const accountModel: AccountModel = {
     const user = await getUser();
     if (user) {
       actions.saveAccount(user);
+      // Check user connection status to service
+      actions.connect({ username: user.username, password: user.password });
     }
   }),
   connect: thunk(async (actions, { username, password }) => {

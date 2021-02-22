@@ -25,9 +25,23 @@
       }
     ],
     "win": {
-      "icon": "./build/icons/mail_sender.png",
+      "icon": "./build/icons/favicon.ico",
       "target": [
         "7z"
+      ]
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
       ]
     }
   },
@@ -56,6 +70,7 @@
     "react": "^17.0.1",
     "react-css-theme-switcher": "^0.2.2",
     "react-dom": "^17.0.1",
+    "react-dropzone": "^11.3.1",
     "react-hook-form": "^6.14.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",

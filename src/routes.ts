@@ -11,8 +11,13 @@ const routes = [
   },
   {
     path: '/mailing-lists',
-    name: 'Malining lists',
+    name: 'Mailing lists',
     icon: 'TeamOutlined',
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    icon: 'SettingOutlined',
   },
   {
     path: '/demo',
@@ -24,11 +29,6 @@ const routes = [
         name: 'one',
       },
     ],
-  },
-  {
-    path: '/settings',
-    name: 'Settings',
-    icon: 'SettingOutlined',
   },
 ];
 

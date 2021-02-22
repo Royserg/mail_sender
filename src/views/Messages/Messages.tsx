@@ -56,7 +56,7 @@ const Messages: FC = () => {
         >
           {/* Sender */}
           <ProFormText
-            name='Email'
+            name='email'
             label='Email'
             width='lg'
             fieldProps={{ placeholder: 'Connect to your Outlook email' }}
@@ -152,6 +152,20 @@ const Messages: FC = () => {
               placeholder: 'Message',
             }}
           />
+
+          {/* TODO: Attachments */}
+          {/* <Dragger {...props}>
+            <p className='ant-upload-drag-icon'>
+              <InboxOutlined />
+            </p>
+            <p className='ant-upload-text'>
+              Click or drag file to this area to upload
+            </p>
+            <p className='ant-upload-hint'>
+              Support for a single or bulk upload. Strictly prohibit from
+              uploading company data or other band files
+            </p>
+          </Dragger> */}
         </ProForm>
       </Card>
     </PageContainer>
