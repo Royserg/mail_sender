@@ -10,5 +10,6 @@ var Channel;
 })(Channel = exports.Channel || (exports.Channel = {}));
 exports.filesProxy = {
     saveList: function (fileData) { return electron_1.ipcRenderer.invoke(Channel.SAVE_LIST, fileData); },
+    removeList: function (filename) { return electron_1.ipcRenderer.invoke(Channel.REMOVE_LIST, filename); },
     getLists: function () { return electron_1.ipcRenderer.invoke(Channel.GET_LISTS); }
 };

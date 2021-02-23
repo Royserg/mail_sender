@@ -40,6 +40,7 @@ var electron_1 = require("electron");
 var files_proxy_1 = require("../proxies/files.proxy");
 var fs = require('fs');
 var LIST_ROOT = './mailing_list/';
+// CREATE
 electron_1.ipcMain.handle(files_proxy_1.Channel.SAVE_LIST, function (event, _a) {
     var filename = _a.filename, data = _a.data;
     return __awaiter(void 0, void 0, void 0, function () {
@@ -59,10 +60,10 @@ electron_1.ipcMain.handle(files_proxy_1.Channel.SAVE_LIST, function (event, _a) 
         });
     });
 });
+// READ
 electron_1.ipcMain.handle(files_proxy_1.Channel.GET_LISTS, function (event, payload) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/, new Promise(function (resolve, reject) {
-                console.log('controller', 'reading list files');
                 var path = "" + LIST_ROOT;
                 fs.readdir(path, function (err, files) { return __awaiter(void 0, void 0, void 0, function () {
                     var i, file, _a, _b, error_1;
@@ -118,23 +119,20 @@ var readFileContent = function (filename) {
         });
     });
 };
-// ipcMain.handle(Channel.GET_USERS, async (event, args) => {
-//   const userRepository = getRepository(User);
-//   const users = await userRepository.find();
-//   return users;
-// });
-// ipcMain.handle(Channel.SAVE_USER, async (event, { username, password }) => {
-//   const userRepository = getRepository(User);
-//   const existing = await userRepository.find();
-//   // Update user in the db
-//   if (existing[0]) {
-//     existing[0].username = username;
-//     existing[0].password = password;
-//     return await userRepository.save(existing[0]);
-//   }
-// Create new user
-//   const newUser = new User();
-//   newUser.username = username;
-//   newUser.password = password;
-//   return await userRepository.save(newUser);
-// });
+// DELETE
+electron_1.ipcMain.handle(files_proxy_1.Channel.REMOVE_LIST, function (event, _a) {
+    var filename = _a.filename;
+    return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_b) {
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    var path = LIST_ROOT + "/" + filename + ".json";
+                    fs.unlink(path, function (error) {
+                        if (error) {
+                            return reject(error);
+                        }
+                        return resolve({ msg: 'success' });
+                    });
+                })];
+        });
+    });
+});

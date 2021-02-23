@@ -19,14 +19,16 @@ import {
   Button,
   Popover,
   Input,
-  Typography,
 } from 'antd';
+import { StatusKind } from 'types/mailingList';
 
 const { Dragger } = Upload;
 
 const MailingLists: FC = () => {
-  const { saveList } = useStoreActions(({ mailingList }) => mailingList);
-  const { uploadStatus, mailingLists } = useStoreState(
+  const { saveList, removeList, setStatus } = useStoreActions(
+    ({ mailingList }) => mailingList
+  );
+  const { uploadStatus, deleteStatus, mailingLists } = useStoreState(
     ({ mailingList }) => mailingList
   );
 
@@ -42,8 +44,9 @@ const MailingLists: FC = () => {
     if (uploadStatus === 'Success') {
       message.success('File saved!');
       handleDeleteUpload();
+      setStatus({ statusKind: StatusKind.uploadStatus, status: undefined });
     }
-  }, [uploadStatus]);
+  }, [uploadStatus, setStatus]);
 
   // Handlers
   const handleDeleteUpload = () => {
@@ -184,7 +187,8 @@ const MailingLists: FC = () => {
                   type='text'
                   danger
                   icon={<DeleteOutlined />}
-                  onClick={handleDeleteUpload}
+                  onClick={() => removeList({ filename: list.filename })}
+                  loading={deleteStatus === 'Loading'}
                 >
                   Remove
                 </Button>

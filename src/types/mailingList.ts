@@ -3,9 +3,9 @@ export interface SaveListDTO {
   data: any[];
 }
 
-export interface UploadFeedback {
-  message: string;
-  success: boolean | undefined;
-}
-
 export type Status = 'Error' | 'Loading' | 'Success' | undefined;
+
+export enum StatusKind {
+  uploadStatus = 'uploadStatus',
+  deleteStatus = 'deleteStatus',
+}

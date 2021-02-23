@@ -19,17 +19,6 @@ const routes = [
     name: 'Settings',
     icon: 'SettingOutlined',
   },
-  {
-    path: '/demo',
-    name: 'demo',
-    icon: 'CrownOutlined',
-    children: [
-      {
-        path: '/welcome',
-        name: 'one',
-      },
-    ],
-  },
 ];
 
 export default routes;

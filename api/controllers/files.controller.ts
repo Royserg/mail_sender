@@ -68,24 +68,13 @@ const readFileContent = (filename: string) => {
 // DELETE
 ipcMain.handle(Channel.REMOVE_LIST, async (event, { filename }) => {
   return new Promise((resolve, reject) => {
-    console.log('controller', 'reading list files');
+    const path = `${LIST_ROOT}/${filename}.json`;
 
-    const path = `${LIST_ROOT}`;
-    fs.readdir(path, async (err, files) => {
-      if (err) {
-        return reject(err);
+    fs.unlink(path, (error) => {
+      if (error) {
+        return reject(error);
       }
-      // Get content of each file
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        try {
-          files[i] = await readFileContent(file);
-        } catch (error) {
-          reject(error);
-        }
-      }
-
-      resolve(files);
+      return resolve({ msg: 'success' });
     });
   });
 });
