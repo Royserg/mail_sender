@@ -1,6 +1,5 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import {
-  Link,
   NavLink,
   Redirect,
   Route,
@@ -8,8 +7,10 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom';
+
 // Styles
-// import './App.less';
+// import './App.less'; // TODO: I don't see a reson to upload the styles yet
+
 // Redux
 import { useStoreActions } from 'store';
 
@@ -32,7 +33,6 @@ import Templates from 'views/Templates';
 import MailingLists from 'views/MailingLists';
 import Settings from 'views/Settings';
 
-// <---- Probably to delete below ----->
 const App: FC = ({ children }) => {
   const history = useHistory();
   const location = useLocation();
@@ -53,6 +53,7 @@ const App: FC = ({ children }) => {
 
   // Not used <3 👇 👇
   const Footer = (
+    // TODO: make a HOme page and put general info about the app and use this footer
     <DefaultFooter
       copyright={`${new Date().getFullYear()}`}
       links={[
