@@ -50,15 +50,74 @@ electron_1.ipcMain.handle(files_proxy_1.Channel.SAVE_LIST, function (event, _a) 
                     var path = "" + LIST_ROOT + filename + ".json";
                     fs.writeFile(path, stringifiedData, function (err) {
                         if (err) {
-                            return reject(err);
+                            reject(err);
                         }
                         console.log(filename + " saved into " + LIST_ROOT);
-                        return resolve({ success: true });
+                        resolve({ success: true });
                     });
                 })];
         });
     });
 });
+electron_1.ipcMain.handle(files_proxy_1.Channel.GET_LISTS, function (event, payload) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        return [2 /*return*/, new Promise(function (resolve, reject) {
+                console.log('controller', 'reading list files');
+                var path = "" + LIST_ROOT;
+                fs.readdir(path, function (err, files) { return __awaiter(void 0, void 0, void 0, function () {
+                    var i, file, _a, _b, error_1;
+                    return __generator(this, function (_c) {
+                        switch (_c.label) {
+                            case 0:
+                                if (err) {
+                                    return [2 /*return*/, reject(err)];
+                                }
+                                i = 0;
+                                _c.label = 1;
+                            case 1:
+                                if (!(i < files.length)) return [3 /*break*/, 6];
+                                file = files[i];
+                                _c.label = 2;
+                            case 2:
+                                _c.trys.push([2, 4, , 5]);
+                                _a = files;
+                                _b = i;
+                                return [4 /*yield*/, readFileContent(file)];
+                            case 3:
+                                _a[_b] = _c.sent();
+                                return [3 /*break*/, 5];
+                            case 4:
+                                error_1 = _c.sent();
+                                reject(error_1);
+                                return [3 /*break*/, 5];
+                            case 5:
+                                i++;
+                                return [3 /*break*/, 1];
+                            case 6:
+                                resolve(files);
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+            })];
+    });
+}); });
+// Helper reading json content
+var readFileContent = function (filename) {
+    return new Promise(function (resolve, reject) {
+        var path = LIST_ROOT + "/" + filename;
+        fs.readFile(path, 'utf8', function (error, data) {
+            if (error) {
+                reject(error);
+            }
+            var jsonFileData = {
+                filename: filename.replace('.json', ''),
+                data: JSON.parse(data)
+            };
+            resolve(jsonFileData);
+        });
+    });
+};
 // ipcMain.handle(Channel.GET_USERS, async (event, args) => {
 //   const userRepository = getRepository(User);
 //   const users = await userRepository.find();

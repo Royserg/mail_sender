@@ -7,11 +7,4 @@ contextBridge.exposeInMainWorld('api', {
   users: userProxy,
   mailer: mailerProxy,
   files: filesProxy,
-  // Send Methods
-  // testSend: (args) => ipcRenderer.send('test-send', args),
-  // // Receive Methods
-  // testReceive: (callback) =>
-  //   ipcRenderer.on('test-receive', (event, data) => {
-  //     callback(data);
-  //   }),
 });

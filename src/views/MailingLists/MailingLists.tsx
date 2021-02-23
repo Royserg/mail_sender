@@ -19,13 +19,16 @@ import {
   Button,
   Popover,
   Input,
+  Typography,
 } from 'antd';
 
 const { Dragger } = Upload;
 
 const MailingLists: FC = () => {
   const { saveList } = useStoreActions(({ mailingList }) => mailingList);
-  const { uploadStatus } = useStoreState(({ mailingList }) => mailingList);
+  const { uploadStatus, mailingLists } = useStoreState(
+    ({ mailingList }) => mailingList
+  );
 
   const [uploaded, setUploaded] = useState<boolean>(false);
   const [items, setItems] = useState<any>([]); // CSV files can vary in attributes -> any
@@ -168,7 +171,26 @@ const MailingLists: FC = () => {
         )}
 
         <div>
-          <h2>Mailing list load existing mailing lists</h2>
+          <h2>Lists</h2>
+
+          <List
+            dataSource={mailingLists}
+            bordered
+            locale={{ emptyText: 'Mailing list empty' }}
+            renderItem={(list, idx) => (
+              <List.Item key={idx}>
+                <List.Item.Meta title={list.filename || 'filename'} />
+                <Button
+                  type='text'
+                  danger
+                  icon={<DeleteOutlined />}
+                  onClick={handleDeleteUpload}
+                >
+                  Remove
+                </Button>
+              </List.Item>
+            )}
+          />
         </div>
       </Card>
     </PageContainer>

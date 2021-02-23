@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const LIST_ROOT = './mailing_list/';
 
+// CREATE
 ipcMain.handle(Channel.SAVE_LIST, async (event, { filename, data }) => {
   return new Promise((resolve, reject) => {
     // console.log('controller', filename, data);
@@ -13,33 +14,78 @@ ipcMain.handle(Channel.SAVE_LIST, async (event, { filename, data }) => {
 
     fs.writeFile(path, stringifiedData, (err) => {
       if (err) {
-        return reject(err);
+        reject(err);
       }
       console.log(`${filename} saved into ${LIST_ROOT}`);
-      return resolve({ success: true });
+      resolve({ success: true });
     });
   });
 });
 
-// ipcMain.handle(Channel.GET_USERS, async (event, args) => {
-//   const userRepository = getRepository(User);
-//   const users = await userRepository.find();
-//   return users;
-// });
+// READ
+ipcMain.handle(Channel.GET_LISTS, async (event, payload) => {
+  return new Promise((resolve, reject) => {
+    const path = `${LIST_ROOT}`;
+    fs.readdir(path, async (err, files) => {
+      if (err) {
+        return reject(err);
+      }
+      // Get content of each file
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        try {
+          files[i] = await readFileContent(file);
+        } catch (error) {
+          reject(error);
+        }
+      }
 
-// ipcMain.handle(Channel.SAVE_USER, async (event, { username, password }) => {
-//   const userRepository = getRepository(User);
-//   const existing = await userRepository.find();
-//   // Update user in the db
-//   if (existing[0]) {
-//     existing[0].username = username;
-//     existing[0].password = password;
-//     return await userRepository.save(existing[0]);
-//   }
+      resolve(files);
+    });
+  });
+});
 
-// Create new user
-//   const newUser = new User();
-//   newUser.username = username;
-//   newUser.password = password;
-//   return await userRepository.save(newUser);
-// });
+// Helper reading json content
+const readFileContent = (filename: string) => {
+  return new Promise((resolve, reject) => {
+    const path = `${LIST_ROOT}/${filename}`;
+
+    fs.readFile(path, 'utf8', (error, data) => {
+      if (error) {
+        reject(error);
+      }
+
+      const jsonFileData = {
+        filename: filename.replace('.json', ''),
+        data: JSON.parse(data),
+      };
+
+      resolve(jsonFileData);
+    });
+  });
+};
+
+// DELETE
+ipcMain.handle(Channel.REMOVE_LIST, async (event, { filename }) => {
+  return new Promise((resolve, reject) => {
+    console.log('controller', 'reading list files');
+
+    const path = `${LIST_ROOT}`;
+    fs.readdir(path, async (err, files) => {
+      if (err) {
+        return reject(err);
+      }
+      // Get content of each file
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        try {
+          files[i] = await readFileContent(file);
+        } catch (error) {
+          reject(error);
+        }
+      }
+
+      resolve(files);
+    });
+  });
+});

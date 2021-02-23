@@ -36,7 +36,12 @@ import Settings from 'views/Settings';
 const App: FC = ({ children }) => {
   const history = useHistory();
   const location = useLocation();
-  const { init } = useStoreActions(({ account }) => account);
+  const { init, loadLists } = useStoreActions((store) => {
+    return {
+      init: store.account.init,
+      loadLists: store.mailingList.getLists,
+    };
+  });
 
   const IconMap = {
     MailOutlined: <MailOutlined />,
@@ -49,7 +54,8 @@ const App: FC = ({ children }) => {
   useEffect(() => {
     console.log('initializing the data');
     init();
-  }, [init]);
+    loadLists();
+  }, [init, loadLists]);
 
   // Not used <3 👇 👇
   const Footer = (

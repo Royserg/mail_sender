@@ -9,5 +9,6 @@ var Channel;
     Channel["GET_LISTS"] = "GET_LISTS";
 })(Channel = exports.Channel || (exports.Channel = {}));
 exports.filesProxy = {
-    saveList: function (fileData) { return electron_1.ipcRenderer.invoke(Channel.SAVE_LIST, fileData); }
+    saveList: function (fileData) { return electron_1.ipcRenderer.invoke(Channel.SAVE_LIST, fileData); },
+    getLists: function () { return electron_1.ipcRenderer.invoke(Channel.GET_LISTS); }
 };
