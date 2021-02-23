@@ -33,7 +33,6 @@ var sendMail = function (_a) {
 };
 exports.sendMail = sendMail;
 var verifyConnection = function (username, password) {
-    console.log('Called verify from API service');
     var transporter = nodemailer_1.createTransport({
         pool: true,
         service: 'outlook',

@@ -40,7 +40,6 @@ const sendMail = ({ recipient, cc, subject, html }: MailData) => {
 };
 
 const verifyConnection = (username: string, password: string) => {
-  console.log('Called verify from API service');
   const transporter = createTransport({
     pool: true,
     service: 'outlook',

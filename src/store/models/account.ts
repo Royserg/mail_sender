@@ -60,13 +60,9 @@ const accountModel: AccountModel = {
   }),
   connect: thunk(async (actions, { username, password }) => {
     actions.setConnectionStatus('Loading');
-    // 1. Create transporter object from nodemailer (Redux)
-    // 3. Save transporter if it successfully connected (Redux)
 
     try {
-      console.log('thunk', username, password);
       const isConnectionValid = await verifyConnection({ username, password });
-      console.log('is connection valid', isConnectionValid);
       if (isConnectionValid) {
         // Save account to db
         saveUser({ username, password });

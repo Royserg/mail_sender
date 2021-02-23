@@ -9,6 +9,7 @@ import store from 'store';
 
 import { UserProxy } from '../api/proxies/users.proxy';
 import { MailerProxy } from '../api/proxies/mailer.proxy';
+import { FilesProxy } from '../api/proxies/files.proxy';
 import { ThemeSwitcherProvider } from 'react-css-theme-switcher';
 
 declare global {
@@ -16,6 +17,7 @@ declare global {
     api: {
       users: UserProxy;
       mailer: MailerProxy;
+      files: FilesProxy;
     };
   }
 }

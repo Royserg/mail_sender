@@ -18,11 +18,7 @@ import ProForm, {
 import { Card } from 'antd';
 
 const Messages: FC = () => {
-  const { register, handleSubmit, errors } = useForm();
-
   const { username } = useStoreState((state) => state.account.account);
-
-  console.log('username', username);
 
   const handleFormSubmit = async (data: any) => {
     console.log('sending mails', data);

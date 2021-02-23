@@ -15,3 +15,4 @@ require("../database");
 // Export all controllers
 __exportStar(require("./users.controller"), exports);
 __exportStar(require("./mailer.controller"), exports);
+__exportStar(require("./files.controller"), exports);

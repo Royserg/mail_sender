@@ -1,8 +1,5 @@
-import React, { FC, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import clsx from 'clsx';
+import React, { FC } from 'react';
 // Styles
-import useStyles from './settingsStyles';
 // Redux
 import { useStoreActions, useStoreState } from 'store';
 
@@ -35,9 +32,6 @@ const Settings: FC = () => {
     username: string;
     password: string;
   }) => {
-    // Disable submit button and show `connecting` indicator
-    console.log('sending', data);
-
     connect({ username: data.username, password: data.password });
   };
 
