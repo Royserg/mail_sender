@@ -34,3 +34,6 @@ src/config/index.ts
 
 # database
 db.sqlite
+
+# mailing list directory
+/mailing_list

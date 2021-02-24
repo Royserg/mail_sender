@@ -4,11 +4,11 @@ const routes = [
     name: 'Messages',
     icon: 'MailOutlined',
   },
-  {
-    path: '/templates',
-    name: 'Templates',
-    icon: 'EditOutlined',
-  },
+  // {
+  //   path: '/templates',
+  //   name: 'Templates',
+  //   icon: 'EditOutlined',
+  // },
   {
     path: '/mailing-lists',
     name: 'Mailing lists',

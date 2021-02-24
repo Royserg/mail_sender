@@ -50,3 +50,11 @@ electron_1.ipcMain.handle(mailer_proxy_1.Channel.VERIFY_CONNECTION, function (ev
         });
     });
 });
+electron_1.ipcMain.handle(mailer_proxy_1.Channel.SEND_MAIL, function (event, data) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mail_service_1.sendMail(data)];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); });

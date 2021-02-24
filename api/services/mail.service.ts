@@ -1,32 +1,45 @@
 import { createTransport } from 'nodemailer';
 
-// TODO: implement this
-
-interface MailData {
+export interface MailData {
+  auth: {
+    username: string;
+    password: string;
+  };
   recipient: string;
   cc: string | string[];
   subject: string;
   html: string;
+  attachments: any[];
 }
 
-const sendMail = ({ recipient, cc, subject, html }: MailData) => {
+const sendMail = ({
+  auth,
+  recipient,
+  cc,
+  subject,
+  html,
+  attachments,
+}: MailData) => {
   const transporter = createTransport({
-    // TODO: Should be read from redux/database - If transporter will be saved then this will not be needed
+    // TODO: Could be read from redux/database - If transporter will be saved then this will not be needed
     service: 'outlook',
     auth: {
-      user: 'random', //TODO: Change for production
-      pass: 'random',
+      user: auth.username,
+      pass: auth.password,
     },
   });
 
   const mailOptions = {
-    from: 'random_usernmae',
+    from: auth.username,
     to: recipient,
     cc,
     subject,
     html,
-    attachments: [],
+    attachments,
   };
+  // {
+  //   path: '/Users/jakub/Desktop/cookie_meme.png',
+  // },
 
   return new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (err: any, data: any) => {

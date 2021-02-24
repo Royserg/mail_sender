@@ -62,11 +62,15 @@ const MailingLists: FC = () => {
   };
 
   const uploadedFileTableView = () => {
-    const columns = items[0].map((header: string) => ({
-      title: header,
-      dataIndex: header.toLowerCase(),
-      key: header.toLocaleLowerCase(),
-    }));
+    const columns = items[0].map((header: string) => {
+      header = header.split(' ').join('-').toLocaleLowerCase();
+
+      return {
+        title: header,
+        dataIndex: header,
+        key: header,
+      };
+    });
 
     let data: any[] = [];
     for (let i = 1; i < items.length; i++) {

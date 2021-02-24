@@ -13,7 +13,8 @@
       "build/**/*"
     ],
     "directories": {
-      "buildResources": "build"
+      "buildResources": "build",
+      "output": "release"
     },
     "extraResources": [
       {
@@ -31,25 +32,37 @@
         ]
       }
     ],
-    "win": {
-      "icon": "./build/icons/favicon.ico",
-      "target": [
-        "7z"
-      ]
+    "mac": {
+      "category": "Mail utility"
     },
     "dmg": {
       "contents": [
         {
-          "x": 110,
-          "y": 150
+          "x": 130,
+          "y": 220
         },
         {
-          "x": 240,
-          "y": 150,
+          "x": 410,
+          "y": 220,
           "type": "link",
           "path": "/Applications"
         }
       ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "msi"
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "rpm",
+        "snap",
+        "AppImage"
+      ],
+      "category": "Development"
     }
   },
   "homepage": "./",
@@ -97,6 +110,7 @@
     "electron-build": "electron-builder",
     "tsc:api": "tsc -p tsconfig.api.json",
     "postinstall": "electron-builder install-app-deps",
+    "pack": "electron-builder --dir",
     "build": "npm run react-build && npm run electron-build",
     "start": "npm run gulp:less && npm run tsc:api && concurrently \"cross-env BROWSER=none npm run react-start-craco\" \"wait-on http://localhost:3000 && electron ./\" ",
     "test": "react-scripts test",

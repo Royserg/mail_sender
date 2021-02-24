@@ -19,8 +19,7 @@ const Settings: FC = () => {
   );
 
   // Theme Switching
-  // const [isDarkMode, setIsDarkMode] = useState(false);
-  const { switcher, currentTheme, status, themes } = useThemeSwitcher();
+  const { switcher, currentTheme, themes } = useThemeSwitcher();
 
   const handleThemeSwitch = (checked: boolean) => {
     // setIsDarkMode(checked);

@@ -7,8 +7,6 @@ const LIST_ROOT = './mailing_list/';
 // CREATE
 ipcMain.handle(Channel.SAVE_LIST, async (event, { filename, data }) => {
   return new Promise((resolve, reject) => {
-    // console.log('controller', filename, data);
-
     const stringifiedData = JSON.stringify(data, null, 4);
     const path = `${LIST_ROOT}${filename}.json`;
 

@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
   NavLink,
   Redirect,
@@ -8,22 +8,19 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-// Styles
-// import './App.less'; // TODO: I don't see a reson to upload the styles yet
-
 // Redux
-import { useStoreActions } from 'store';
+import { useStoreActions, useStoreState } from 'store';
 
 // Components
-import ProLayout, { DefaultFooter, MenuDataItem } from '@ant-design/pro-layout';
+import ProLayout, { MenuDataItem } from '@ant-design/pro-layout';
 import logo from 'assets/icon.svg';
 import {
-  GithubOutlined,
   MailOutlined,
   SettingOutlined,
   CrownOutlined,
   TeamOutlined,
   EditOutlined,
+  CheckCircleOutlined,
 } from '@ant-design/icons';
 
 import routes from 'routes';
@@ -32,16 +29,27 @@ import Messages from 'views/Messages';
 import Templates from 'views/Templates';
 import MailingLists from 'views/MailingLists';
 import Settings from 'views/Settings';
+import Home from 'views/Home';
+import { Drawer, List, message } from 'antd';
+import { StatusKind } from 'types/mailingList';
 
 const App: FC = ({ children }) => {
   const history = useHistory();
   const location = useLocation();
-  const { init, loadLists } = useStoreActions((store) => {
+
+  const { init, loadLists, setStatus } = useStoreActions((store) => {
     return {
       init: store.account.init,
       loadLists: store.mailingList.getLists,
+      setStatus: store.mailingList.setStatus,
     };
   });
+
+  const { currentlySending, sendStatus } = useStoreState(
+    (store) => store.mailingList
+  );
+
+  const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
 
   const IconMap = {
     MailOutlined: <MailOutlined />,
@@ -57,22 +65,16 @@ const App: FC = ({ children }) => {
     loadLists();
   }, [init, loadLists]);
 
-  // Not used <3 👇 👇
-  const Footer = (
-    // TODO: make a HOme page and put general info about the app and use this footer
-    <DefaultFooter
-      copyright={`${new Date().getFullYear()}`}
-      links={[
-        {
-          key: 'github',
-          title: <GithubOutlined />,
-          href: 'https://github.com/Royserg/mail_sender',
-          blankTarget: true,
-        },
-      ]}
-    />
-  );
-  // Not used 👆 👆
+  useEffect(() => {
+    if (sendStatus === 'Loading') {
+      setDrawerVisible(true);
+    }
+    if (sendStatus === 'Success') {
+      message.success('Emails Sent successfully!');
+      setStatus({ statusKind: StatusKind.sendStatus, status: undefined });
+      setDrawerVisible(false);
+    }
+  }, [sendStatus, setStatus]);
 
   const loopMenuItem = (menus: MenuDataItem[]): MenuDataItem[] =>
     menus.map(({ icon, children, ...item }) => ({
@@ -95,16 +97,35 @@ const App: FC = ({ children }) => {
         return <NavLink to={item.path || '/'}>{dom}</NavLink>;
       }}
       headerRender={false}
-      // footerRender={() => Footer}
     >
       <Switch>
+        <Route exact path='/home' component={Home} />
         <Route exact path='/messages' component={Messages} />
         <Route exact path='/templates' component={Templates} />
         <Route exact path='/mailing-lists' component={MailingLists} />
         <Route exact path='/settings' component={Settings} />
 
-        <Redirect to='/messages' />
+        <Redirect to='/home' />
       </Switch>
+
+      <Drawer
+        title='Sending in process...'
+        placement='right'
+        // onClose={() => setDrawerVisible(false)}
+        visible={drawerVisible}
+      >
+        <List
+          dataSource={currentlySending}
+          loading={currentlySending.length === 0}
+          locale={{ emptyText: 'Sending...' }}
+          renderItem={(user, idx) => (
+            <List.Item key={idx}>
+              <List.Item.Meta title={user.email || 'email@mail.com'} />
+              <CheckCircleOutlined />
+            </List.Item>
+          )}
+        />
+      </Drawer>
     </ProLayout>
   );
 };

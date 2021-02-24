@@ -46,7 +46,6 @@ electron_1.ipcMain.handle(files_proxy_1.Channel.SAVE_LIST, function (event, _a) 
     return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_b) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
-                    // console.log('controller', filename, data);
                     var stringifiedData = JSON.stringify(data, null, 4);
                     var path = "" + LIST_ROOT + filename + ".json";
                     fs.writeFile(path, stringifiedData, function (err) {

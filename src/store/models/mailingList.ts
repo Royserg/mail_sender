@@ -1,13 +1,17 @@
 import { Action, action, thunk, Thunk } from 'easy-peasy';
 import { SaveListDTO, Status, StatusKind } from 'types/mailingList';
+import { Account } from 'types/account';
 
 // API
 const files = window.api.files;
+const { sendMail } = window.api.mailer;
 
 export interface MailingListModel {
   mailingLists: any[];
+  currentlySending: any[];
   uploadStatus: Status;
   deleteStatus: Status;
+  sendStatus: Status;
 
   // Actions
   setStatus: Action<
@@ -15,16 +19,27 @@ export interface MailingListModel {
     { statusKind: StatusKind; status: Status }
   >;
   updateLists: Action<MailingListModel, any[]>;
+
+  updateCurrentlySending: Action<MailingListModel, {}>;
+  removeCurrentlySending: Action<MailingListModel>;
+
   // Thunks
   saveList: Thunk<MailingListModel, SaveListDTO>;
   removeList: Thunk<MailingListModel, { filename: string }>;
   getLists: Thunk<MailingListModel>;
+
+  sendMails: Thunk<
+    MailingListModel,
+    { mailingList: string; mailData: any; auth: Account }
+  >;
 }
 
 const mailingListModel: MailingListModel = {
   mailingLists: [],
+  currentlySending: [],
   uploadStatus: undefined,
   deleteStatus: undefined,
+  sendStatus: undefined,
 
   // Actions
   setStatus: action((state, { statusKind, status }) => {
@@ -32,6 +47,13 @@ const mailingListModel: MailingListModel = {
   }),
   updateLists: action((state, payload) => {
     state.mailingLists = payload;
+  }),
+
+  updateCurrentlySending: action((state, payload) => {
+    state.currentlySending = [...state.currentlySending, payload];
+  }),
+  removeCurrentlySending: action((state) => {
+    state.currentlySending = [];
   }),
   // Thunks
   saveList: thunk(async (actions, { filename, data }) => {
@@ -83,6 +105,62 @@ const mailingListModel: MailingListModel = {
       console.log(err);
     }
   }),
+
+  sendMails: thunk(
+    async (actions, { mailingList, mailData, auth }, { getState }) => {
+      actions.setStatus({
+        statusKind: StatusKind.sendStatus,
+        status: 'Loading',
+      });
+
+      const list = getState().mailingLists.find(
+        (l) => l.filename === mailingList
+      );
+
+      const recipientsData = list.data;
+
+      for (let i = 0; i < recipientsData.length; i++) {
+        let content = mailData.message;
+        let recipient = recipientsData[i];
+
+        for (let key of Object.keys(recipient)) {
+          if (key !== 'key') {
+            content = content.replace(`#${key}`, recipient[key]);
+          }
+        }
+
+        // Send mail with prepared content
+        try {
+          await sendMail({
+            auth: auth,
+            recipient: recipient['email'],
+            cc: mailData.cc,
+            subject: mailData.subject,
+            html: content,
+            attachments: mailData.attachments,
+          });
+
+          actions.updateCurrentlySending({
+            email: recipient['email'],
+            success: true,
+          });
+        } catch (err) {
+          console.log('error', err);
+
+          actions.setStatus({
+            statusKind: StatusKind.sendStatus,
+            status: 'Error',
+          });
+        }
+      }
+
+      actions.setStatus({
+        statusKind: StatusKind.sendStatus,
+        status: 'Success',
+      });
+      actions.removeCurrentlySending();
+    }
+  ),
 };
 
 export default mailingListModel;

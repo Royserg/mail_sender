@@ -1,35 +1,62 @@
-import { FC } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { FC, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 // Redux
-import { useStoreState } from 'store';
-// Services
-// import { sendMail } from 'services/mailService';
-// Styles
+import { useStoreActions, useStoreState } from 'store';
 
+// Styles
 // Components
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProForm, {
   ProFormText,
   ProFormSelect,
-  ProFormUploadButton,
   ProFormTextArea,
 } from '@ant-design/pro-form';
+import { Button, Card, Divider, Tag, Typography } from 'antd';
 
-import { Card } from 'antd';
+const { Paragraph } = Typography;
+
+interface AttachmentFile {
+  name: string;
+  path: string;
+}
 
 const Messages: FC = () => {
-  const { username } = useStoreState((state) => state.account.account);
+  const { sendMails } = useStoreActions(({ mailingList }) => mailingList);
+  const { user, mailingLists } = useStoreState((state) => {
+    return {
+      user: state.account.account,
+      mailingLists: state.mailingList.mailingLists,
+    };
+  });
+
+  const history = useHistory();
+
+  const [currentList, setCurrentList] = useState<string>('');
+  const [filesList, setFileList] = useState<AttachmentFile[]>([]);
 
   const handleFormSubmit = async (data: any) => {
-    console.log('sending mails', data);
-    // const result = await sendMail({
-    //   recipient: data.recipient,
-    //   cc: data.cc,
-    //   subject: data.subject,
-    //   html: data.content,
-    // });
+    // Add attachments
+    data.attachments = filesList;
 
-    // console.log('result', result);
+    sendMails({
+      auth: user,
+      mailingList: currentList,
+      mailData: data,
+    });
+  };
+
+  const generateTags = (listName: string) => {
+    const listObj = mailingLists.find((l) => l.filename === listName);
+    const data = listObj.data[0];
+    delete data.key;
+
+    return Object.keys(data).map((tag, idx) => (
+      <Tag key={idx}>
+        <Paragraph copyable={{ tooltips: ['Copy tag', 'Copied!'] }}>
+          {`#${tag}`}
+        </Paragraph>
+      </Tag>
+    ));
   };
 
   return (
@@ -40,6 +67,9 @@ const Messages: FC = () => {
           submitter={{
             searchConfig: {
               submitText: 'Send',
+            },
+            submitButtonProps: {
+              disabled: !currentList,
             },
             resetButtonProps: {
               style: {
@@ -56,7 +86,7 @@ const Messages: FC = () => {
             label='Email'
             width='lg'
             fieldProps={{ placeholder: 'Connect to your Outlook email' }}
-            initialValue={username || ''}
+            initialValue={user.username || ''}
             disabled
             rules={[
               {
@@ -65,46 +95,6 @@ const Messages: FC = () => {
               },
             ]}
           />
-
-          {/* Recipients */}
-          <ProForm.Group>
-            {/* <ProFormText
-              name='Recipients'
-              label='Recipients'
-              fieldProps={{
-                placeholder: 'Enter recipients or upload mailing list',
-              }}
-              width='lg'
-              rules={[
-                {
-                  required: true,
-                  message: 'Recipient(s) required',
-                },
-              ]}
-            /> */}
-
-            <ProFormSelect
-              name='mailingList'
-              label='Mailing list'
-              fieldProps={{
-                placeholder: 'Mailing list',
-              }}
-              width='md'
-              options={[
-                // Fetch mailing lists, or rather read them from redux
-                {
-                  value: 'list1',
-                  label: 'list1_label',
-                },
-              ]}
-              rules={[
-                {
-                  required: true,
-                  message: 'Mailing list required',
-                },
-              ]}
-            />
-          </ProForm.Group>
 
           <ProFormText
             name='cc'
@@ -133,12 +123,36 @@ const Messages: FC = () => {
             ]}
           />
 
-          <ProFormUploadButton
-            extra='Upload：.jpg .zip .doc .wps'
-            label='Upload'
-            name='file'
-            title='Upload'
-          />
+          {/* Recipients */}
+          {mailingLists.length > 0 ? (
+            <>
+              <ProFormSelect
+                name='mailingList'
+                label='Mailing list'
+                getValueFromEvent={(listName) => setCurrentList(listName)}
+                fieldProps={{
+                  placeholder: 'Mailing list',
+                }}
+                width='sm'
+                options={mailingLists.map((list, idx) => ({
+                  key: idx,
+                  value: list.filename,
+                  label: list.filename,
+                }))}
+              />
+
+              {currentList && (
+                <div style={{ marginBottom: '1rem' }}>
+                  <Divider orientation='left'>Dynamic tags</Divider>
+                  {generateTags(currentList)}
+                </div>
+              )}
+            </>
+          ) : (
+            <Button danger onClick={() => history.push('/mailing-lists')}>
+              Upload mailing list
+            </Button>
+          )}
 
           <ProFormTextArea
             width='xl'
@@ -149,19 +163,22 @@ const Messages: FC = () => {
             }}
           />
 
-          {/* TODO: Attachments */}
-          {/* <Dragger {...props}>
-            <p className='ant-upload-drag-icon'>
-              <InboxOutlined />
-            </p>
-            <p className='ant-upload-text'>
-              Click or drag file to this area to upload
-            </p>
-            <p className='ant-upload-hint'>
-              Support for a single or bulk upload. Strictly prohibit from
-              uploading company data or other band files
-            </p>
-          </Dragger> */}
+          <input
+            type='file'
+            name='filefield'
+            multiple
+            onChange={(e) => {
+              if (e.target.files) {
+                let fileAttachments: AttachmentFile[] = [];
+                for (let i = 0; i < e.target.files.length; i++) {
+                  const file = e.target.files[i];
+                  fileAttachments.push({ name: file.name, path: file.path });
+                }
+
+                setFileList(fileAttachments);
+              }
+            }}
+          ></input>
         </ProForm>
       </Card>
     </PageContainer>

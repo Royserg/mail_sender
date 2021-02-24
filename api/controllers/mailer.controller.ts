@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { Channel } from '../proxies/mailer.proxy';
-import { verifyConnection } from '../services/mail.service';
+import { verifyConnection, sendMail } from '../services/mail.service';
 
 ipcMain.handle(
   Channel.VERIFY_CONNECTION,
@@ -8,3 +8,7 @@ ipcMain.handle(
     return await verifyConnection(username, password);
   }
 );
+
+ipcMain.handle(Channel.SEND_MAIL, async (event, data) => {
+  return await sendMail(data);
+});

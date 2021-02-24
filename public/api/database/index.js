@@ -13,9 +13,4 @@ var connectionOptions = {
 typeorm_1.createConnection(connectionOptions)
     .then(function () {
     console.log('Connected to database');
-    // const userRepository = getRepository(User);
-    // const user = new User();
-    // user.username = 'Jakub';
-    // user.password = 'JakubsPassword';
-    // return userRepository.save(user);
 })["catch"](console.error);
