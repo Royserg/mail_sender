@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router } from 'react-router-dom';
-import './index.css';
+import './index.less';
 import App from './App';
 // Redux
 import { StoreProvider } from 'easy-peasy';
@@ -28,10 +28,10 @@ export enum Theme {
 }
 
 const themes = {
-  // dark: `${process.env.PUBLIC_URL}/dark-theme.css`,
-  // light: `${process.env.PUBLIC_URL}/light-theme.css`,
-  dark: `dark-theme.css`,
-  light: `light-theme.css`,
+  dark: `${process.env.PUBLIC_URL}/dark-theme.css`,
+  light: `${process.env.PUBLIC_URL}/light-theme.css`,
+  // dark: `dark-theme.css`,
+  // light: `light-theme.css`,
 };
 
 ReactDOM.render(

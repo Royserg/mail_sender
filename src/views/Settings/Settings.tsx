@@ -3,9 +3,6 @@ import React, { FC } from 'react';
 // Redux
 import { useStoreActions, useStoreState } from 'store';
 
-// ->> TODO: DELETE THIS <====
-import config from 'config'; // TODO: only dev purpose
-
 // Components
 import { Card, Switch, List, Alert } from 'antd';
 import { useThemeSwitcher } from 'react-css-theme-switcher';
@@ -68,7 +65,6 @@ const Settings: FC = () => {
           label='Email'
           width='md'
           fieldProps={{ placeholder: 'Outlook email' }}
-          initialValue={config.USERNAME}
           rules={[
             {
               required: true,
@@ -82,7 +78,6 @@ const Settings: FC = () => {
           label='Password'
           width='md'
           fieldProps={{ placeholder: 'Outlook password', type: 'password' }}
-          initialValue={config.PASSWORD}
           rules={[
             {
               required: true,

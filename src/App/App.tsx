@@ -1,4 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
+// Styles
+import './App.less';
+
 import {
   NavLink,
   Redirect,
@@ -21,6 +24,7 @@ import {
   TeamOutlined,
   EditOutlined,
   CheckCircleOutlined,
+  SendOutlined,
 } from '@ant-design/icons';
 
 import routes from 'routes';
@@ -30,7 +34,7 @@ import Templates from 'views/Templates';
 import MailingLists from 'views/MailingLists';
 import Settings from 'views/Settings';
 import Home from 'views/Home';
-import { Drawer, List, message } from 'antd';
+import { Button, Drawer, List, message, Tooltip } from 'antd';
 import { StatusKind } from 'types/mailingList';
 
 const App: FC = ({ children }) => {
@@ -72,7 +76,6 @@ const App: FC = ({ children }) => {
     if (sendStatus === 'Success') {
       message.success('Emails Sent successfully!');
       setStatus({ statusKind: StatusKind.sendStatus, status: undefined });
-      setDrawerVisible(false);
     }
   }, [sendStatus, setStatus]);
 
@@ -86,7 +89,7 @@ const App: FC = ({ children }) => {
   return (
     <ProLayout
       title='MailSender'
-      fixSiderbar={true}
+      fixSiderbar={false}
       location={{
         pathname: location.pathname,
       }}
@@ -108,16 +111,30 @@ const App: FC = ({ children }) => {
         <Redirect to='/home' />
       </Switch>
 
+      {/* If sending and drawer closed, stick button to the right opening it */}
+      <Tooltip
+        title='Sending status'
+        placement='left'
+        className='drawer-open-button'
+      >
+        <Button
+          type='primary'
+          icon={<SendOutlined />}
+          size='large'
+          onClick={() => setDrawerVisible(true)}
+        />
+      </Tooltip>
+
       <Drawer
-        title='Sending in process...'
+        title='Email Sending'
         placement='right'
-        // onClose={() => setDrawerVisible(false)}
+        onClose={() => setDrawerVisible(false)}
         visible={drawerVisible}
       >
         <List
           dataSource={currentlySending}
-          loading={currentlySending.length === 0}
-          locale={{ emptyText: 'Sending...' }}
+          loading={sendStatus === 'Loading' && currentlySending.length === 0}
+          locale={{ emptyText: sendStatus === 'Loading' && 'Sending...' }}
           renderItem={(user, idx) => (
             <List.Item key={idx}>
               <List.Item.Meta title={user.email || 'email@mail.com'} />

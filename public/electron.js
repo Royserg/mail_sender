@@ -39,6 +39,9 @@ const createWindow = () => {
   }
 };
 
+// === DB ===
+require('./api/database');
+
 // === Controllers ===
 require('./api/controllers');
 
