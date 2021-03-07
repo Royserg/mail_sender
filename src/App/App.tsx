@@ -36,6 +36,7 @@ import Settings from 'views/Settings';
 import Home from 'views/Home';
 import { Button, Drawer, List, message, Tooltip } from 'antd';
 import { StatusKind } from 'types/mailingList';
+import Title from 'antd/lib/typography/Title';
 
 const App: FC = ({ children }) => {
   const history = useHistory();
@@ -49,7 +50,7 @@ const App: FC = ({ children }) => {
     };
   });
 
-  const { currentlySending, sendStatus } = useStoreState(
+  const { currentList, sent, sendStatus } = useStoreState(
     (store) => store.mailingList
   );
 
@@ -89,7 +90,7 @@ const App: FC = ({ children }) => {
   return (
     <ProLayout
       title='MailSender'
-      fixSiderbar={false}
+      fixSiderbar={true}
       location={{
         pathname: location.pathname,
       }}
@@ -111,7 +112,7 @@ const App: FC = ({ children }) => {
         <Redirect to='/home' />
       </Switch>
 
-      {/* If sending and drawer closed, stick button to the right opening it */}
+      {/* Fixed button to the right side - Opening drawer */}
       <Tooltip
         title='Sending status'
         placement='left'
@@ -131,9 +132,15 @@ const App: FC = ({ children }) => {
         onClose={() => setDrawerVisible(false)}
         visible={drawerVisible}
       >
+        {currentList.length > 0 && (
+          <Title level={5} style={{ textAlign: 'center' }}>
+            {sent.length} / {currentList.length}
+          </Title>
+        )}
+
         <List
-          dataSource={currentlySending}
-          loading={sendStatus === 'Loading' && currentlySending.length === 0}
+          dataSource={sent}
+          loading={sendStatus === 'Loading' && sent.length === 0}
           locale={{ emptyText: sendStatus === 'Loading' && 'Sending...' }}
           renderItem={(user, idx) => (
             <List.Item key={idx}>

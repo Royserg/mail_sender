@@ -8,7 +8,10 @@ const { sendMail } = window.api.mailer;
 
 export interface MailingListModel {
   mailingLists: any[];
-  currentlySending: any[];
+
+  currentList: any[];
+  sent: any[];
+
   uploadStatus: Status;
   deleteStatus: Status;
   sendStatus: Status;
@@ -20,8 +23,9 @@ export interface MailingListModel {
   >;
   updateLists: Action<MailingListModel, any[]>;
 
-  updateCurrentlySending: Action<MailingListModel, {}>;
-  removeCurrentlySending: Action<MailingListModel>;
+  setCurrentList: Action<MailingListModel, any[]>;
+  addToSent: Action<MailingListModel, {}>;
+  afterSentCleanup: Action<MailingListModel>;
 
   // Thunks
   saveList: Thunk<MailingListModel, SaveListDTO>;
@@ -36,7 +40,10 @@ export interface MailingListModel {
 
 const mailingListModel: MailingListModel = {
   mailingLists: [],
-  currentlySending: [],
+
+  currentList: [],
+  sent: [],
+
   uploadStatus: undefined,
   deleteStatus: undefined,
   sendStatus: undefined,
@@ -49,12 +56,18 @@ const mailingListModel: MailingListModel = {
     state.mailingLists = payload;
   }),
 
-  updateCurrentlySending: action((state, payload) => {
-    state.currentlySending = [...state.currentlySending, payload];
+  // Sending mails actions
+  setCurrentList: action((state, payload) => {
+    state.currentList = payload;
   }),
-  removeCurrentlySending: action((state) => {
-    state.currentlySending = [];
+  addToSent: action((state, payload) => {
+    state.sent = [...state.sent, payload];
   }),
+  afterSentCleanup: action((state) => {
+    state.currentList = [];
+    state.sent = [];
+  }),
+
   // Thunks
   saveList: thunk(async (actions, { filename, data }) => {
     actions.setStatus({
@@ -118,7 +131,9 @@ const mailingListModel: MailingListModel = {
       );
 
       const recipientsData = list.data;
+      actions.setCurrentList(recipientsData);
 
+      // Inject dynamic data
       for (let i = 0; i < recipientsData.length; i++) {
         let content = mailData.message;
         let recipient = recipientsData[i];
@@ -129,28 +144,30 @@ const mailingListModel: MailingListModel = {
           }
         }
 
-        // Send mail with prepared content
-        try {
-          await sendMail({
-            auth: auth,
-            recipient: recipient['email'],
-            cc: mailData.cc,
-            subject: mailData.subject,
-            html: content,
-            attachments: mailData.attachments,
-          });
+        // Send mail with prepared content if email exists
+        if (recipient['email']) {
+          try {
+            await sendMail({
+              auth: auth,
+              recipient: recipient['email'],
+              cc: mailData.cc,
+              subject: mailData.subject,
+              html: content,
+              attachments: mailData.attachments,
+            });
 
-          actions.updateCurrentlySending({
-            email: recipient['email'],
-            success: true,
-          });
-        } catch (err) {
-          console.log('error', err);
+            actions.addToSent({
+              email: recipient['email'],
+              success: true,
+            });
+          } catch (err) {
+            console.log('error', err);
 
-          actions.setStatus({
-            statusKind: StatusKind.sendStatus,
-            status: 'Error',
-          });
+            actions.setStatus({
+              statusKind: StatusKind.sendStatus,
+              status: 'Error',
+            });
+          }
         }
       }
 
@@ -158,7 +175,7 @@ const mailingListModel: MailingListModel = {
         statusKind: StatusKind.sendStatus,
         status: 'Success',
       });
-      actions.removeCurrentlySending();
+      actions.afterSentCleanup();
     }
   ),
 };
