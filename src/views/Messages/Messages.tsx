@@ -1,9 +1,10 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 // Redux
 import { useStoreActions, useStoreState } from 'store';
 
 // Styles
+import './Messages.less';
 // Components
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProForm, { ProFormText, ProFormSelect } from '@ant-design/pro-form';
@@ -31,6 +32,23 @@ const Messages: FC = () => {
   const [currentList, setCurrentList] = useState<string>('');
   const [filesList, setFileList] = useState<AttachmentFile[]>([]);
 
+  let editor = useRef(null);
+
+  useEffect(() => {
+    // @ts-ignore
+    editor.current = unlayer.init({
+      id: 'editor-container',
+      projectId: 1234,
+      displayMode: 'web',
+      appearance: {
+        theme: 'dark',
+      },
+    });
+
+    console.log('editor', editor);
+  }, []);
+
+  // Handlers
   const handleFormSubmit = async (formData: any) => {
     // Add attachments
     formData.attachments = filesList;
@@ -171,7 +189,11 @@ const Messages: FC = () => {
               Upload mailing list
             </Button>
           )}
-          <EmailEditor ref={emailEditorRef} onLoad={onLoad} />
+
+          {/* Email Editor */}
+          <div id='editor-container'></div>
+
+          {/* <EmailEditor ref={emailEditorRef} onLoad={onLoad} /> */}
 
           <input
             type='file'
