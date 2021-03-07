@@ -89,7 +89,7 @@ const App: FC = ({ children }) => {
   return (
     <ProLayout
       title='MailSender'
-      fixSiderbar={false}
+      fixSiderbar={true}
       location={{
         pathname: location.pathname,
       }}

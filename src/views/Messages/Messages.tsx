@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 // Redux
 import { useStoreActions, useStoreState } from 'store';
@@ -12,6 +12,7 @@ import ProForm, {
   ProFormTextArea,
 } from '@ant-design/pro-form';
 import { Button, Card, Divider, Tag, Typography } from 'antd';
+import EmailEditor from 'react-email-editor';
 
 const { Paragraph } = Typography;
 
@@ -34,14 +35,22 @@ const Messages: FC = () => {
   const [currentList, setCurrentList] = useState<string>('');
   const [filesList, setFileList] = useState<AttachmentFile[]>([]);
 
-  const handleFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (formData: any) => {
     // Add attachments
-    data.attachments = filesList;
+    formData.attachments = filesList;
+    // Add message html
 
-    sendMails({
-      auth: user,
-      mailingList: currentList,
-      mailData: data,
+    // @ts-ignore
+    emailEditorRef.current.editor.exportHtml((editorData) => {
+      const { design, html } = editorData;
+      formData.message = html;
+
+      // Send mails
+      sendMails({
+        auth: user,
+        mailingList: currentList,
+        mailData: formData,
+      });
     });
   };
 
@@ -57,6 +66,22 @@ const Messages: FC = () => {
         </Paragraph>
       </Tag>
     ));
+  };
+
+  // -- Email Editor --
+  const emailEditorRef = useRef(null);
+  const exportHtml = () => {
+    // @ts-ignore
+    emailEditorRef.current.editor.exportHtml((data) => {
+      const { design, html } = data;
+      console.log('exportHtml', html);
+    });
+  };
+
+  const onLoad = () => {
+    // you can load your template here;
+    // const templateJson = {};
+    // emailEditorRef.current.editor.loadDesign(templateJson);
   };
 
   return (
@@ -95,7 +120,6 @@ const Messages: FC = () => {
               },
             ]}
           />
-
           <ProFormText
             name='cc'
             label='CC'
@@ -109,7 +133,6 @@ const Messages: FC = () => {
               },
             ]}
           />
-
           <ProFormText
             name='subject'
             label='Email subject'
@@ -122,7 +145,6 @@ const Messages: FC = () => {
               },
             ]}
           />
-
           {/* Recipients */}
           {mailingLists.length > 0 ? (
             <>
@@ -153,15 +175,15 @@ const Messages: FC = () => {
               Upload mailing list
             </Button>
           )}
-
-          <ProFormTextArea
+          {/* <ProFormTextArea
             width='xl'
             label='Message'
             name='message'
             fieldProps={{
               placeholder: 'Message',
             }}
-          />
+          /> */}
+          <EmailEditor ref={emailEditorRef} onLoad={onLoad} />
 
           <input
             type='file'
