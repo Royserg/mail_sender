@@ -6,11 +6,7 @@ import { useStoreActions, useStoreState } from 'store';
 // Styles
 // Components
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProForm, {
-  ProFormText,
-  ProFormSelect,
-  ProFormTextArea,
-} from '@ant-design/pro-form';
+import ProForm, { ProFormText, ProFormSelect } from '@ant-design/pro-form';
 import { Button, Card, Divider, Tag, Typography } from 'antd';
 import EmailEditor from 'react-email-editor';
 
@@ -175,14 +171,6 @@ const Messages: FC = () => {
               Upload mailing list
             </Button>
           )}
-          {/* <ProFormTextArea
-            width='xl'
-            label='Message'
-            name='message'
-            fieldProps={{
-              placeholder: 'Message',
-            }}
-          /> */}
           <EmailEditor ref={emailEditorRef} onLoad={onLoad} />
 
           <input
