@@ -4,6 +4,7 @@ var electron_1 = require("electron");
 var files_proxy_1 = require("./proxies/files.proxy");
 var mailer_proxy_1 = require("./proxies/mailer.proxy");
 var users_proxy_1 = require("./proxies/users.proxy");
+require("./database");
 electron_1.contextBridge.exposeInMainWorld('api', {
     users: users_proxy_1.userProxy,
     mailer: mailer_proxy_1.mailerProxy,

@@ -4,7 +4,7 @@ import { User } from './entities/User';
 
 const connectionOptions: ConnectionOptions = {
   type: 'sqlite',
-  database: 'db.sqlite',
+  database: './tmp/main.db',
   entities: [User],
   synchronize: true,
   logging: true,

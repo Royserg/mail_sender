@@ -39,7 +39,7 @@ exports.__esModule = true;
 var electron_1 = require("electron");
 var files_proxy_1 = require("../proxies/files.proxy");
 var fs = require('fs');
-var LIST_ROOT = './mailing_list/';
+var LIST_ROOT = './tmp/mailing_list';
 // CREATE
 electron_1.ipcMain.handle(files_proxy_1.Channel.SAVE_LIST, function (event, _a) {
     var filename = _a.filename, data = _a.data;
@@ -47,7 +47,7 @@ electron_1.ipcMain.handle(files_proxy_1.Channel.SAVE_LIST, function (event, _a) 
         return __generator(this, function (_b) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
                     var stringifiedData = JSON.stringify(data, null, 4);
-                    var path = "" + LIST_ROOT + filename + ".json";
+                    var path = LIST_ROOT + "/" + filename + ".json";
                     fs.writeFile(path, stringifiedData, function (err) {
                         if (err) {
                             reject(err);
@@ -64,6 +64,10 @@ electron_1.ipcMain.handle(files_proxy_1.Channel.GET_LISTS, function (event, payl
     return __generator(this, function (_a) {
         return [2 /*return*/, new Promise(function (resolve, reject) {
                 var path = "" + LIST_ROOT;
+                if (!fs.existsSync(path)) {
+                    // create directory
+                    fs.mkdirSync(path);
+                }
                 fs.readdir(path, function (err, files) { return __awaiter(void 0, void 0, void 0, function () {
                     var i, file, _a, _b, error_1;
                     return __generator(this, function (_c) {
