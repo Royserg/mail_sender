@@ -2,13 +2,13 @@ import { ipcMain } from 'electron';
 import { Channel } from '../proxies/files.proxy';
 const fs = require('fs');
 
-const LIST_ROOT = './mailing_list/';
+const LIST_ROOT = './tmp/mailing_list';
 
 // CREATE
 ipcMain.handle(Channel.SAVE_LIST, async (event, { filename, data }) => {
   return new Promise((resolve, reject) => {
     const stringifiedData = JSON.stringify(data, null, 4);
-    const path = `${LIST_ROOT}${filename}.json`;
+    const path = `${LIST_ROOT}/${filename}.json`;
 
     fs.writeFile(path, stringifiedData, (err) => {
       if (err) {
@@ -24,6 +24,12 @@ ipcMain.handle(Channel.SAVE_LIST, async (event, { filename, data }) => {
 ipcMain.handle(Channel.GET_LISTS, async (event, payload) => {
   return new Promise((resolve, reject) => {
     const path = `${LIST_ROOT}`;
+
+    if (!fs.existsSync(path)) {
+      // create directory
+      fs.mkdirSync(path);
+    }
+
     fs.readdir(path, async (err, files) => {
       if (err) {
         return reject(err);

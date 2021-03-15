@@ -5,7 +5,7 @@ var typeorm_1 = require("typeorm");
 var User_1 = require("./entities/User");
 var connectionOptions = {
     type: 'sqlite',
-    database: 'db.sqlite',
+    database: './tmp/main.db',
     entities: [User_1.User],
     synchronize: true,
     logging: true

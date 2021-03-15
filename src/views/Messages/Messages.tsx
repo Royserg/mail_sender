@@ -9,7 +9,6 @@ import './Messages.less';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProForm, { ProFormText, ProFormSelect } from '@ant-design/pro-form';
 import { Button, Card, Divider, Tag, Typography } from 'antd';
-import EmailEditor from 'react-email-editor';
 
 const { Paragraph } = Typography;
 
@@ -192,8 +191,6 @@ const Messages: FC = () => {
 
           {/* Email Editor */}
           <div id='editor-container'></div>
-
-          {/* <EmailEditor ref={emailEditorRef} onLoad={onLoad} /> */}
 
           <input
             type='file'
